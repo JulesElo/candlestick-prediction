@@ -9,7 +9,7 @@ def test_high_resolution_image():
     ALTURA_PIXELS = 100
     DPI = 100
     
-    csv_path = os.path.join("..", "data", "raw", "USDTBRL_daily.csv")
+    csv_path = os.path.join("..", "..", "data", "raw", "USDTBRL_daily.csv")
     
     # Lê os dados
     df = pd.read_csv(csv_path)
