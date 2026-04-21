@@ -40,7 +40,7 @@ class CandlestickCNN(nn.Module):
         
         # Camada densa (Fully Connected)
         # O flatten transforma os tensores 3D em um vetor 1D
-        self.fc1 = nn.Linear(96 * 14 * 14, 512)
+        self.fc1 = nn.Linear(96 * 3 * 3, 512)
         self.drop3 = nn.Dropout(p=0.5)
         
         # Camada de saída: 2 neurônios (Classe 0: DOWN, Classe 1: UP)
@@ -57,7 +57,7 @@ class CandlestickCNN(nn.Module):
         x = self.drop2(self.pool4(F.relu(self.conv4(x))))
         
         # Achatar (Flatten) a matriz para alimentar a camada Densa
-        x = x.view(-1, 96 * 14 * 14)
+        x = x.view(-1, 96 * 3 * 3)
         
         x = F.relu(self.fc1(x))
         x = self.drop3(x)
