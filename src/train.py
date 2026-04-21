@@ -45,7 +45,7 @@ def train_model():
     """
     # 1. Hiperparâmetros (Configurações do treinamento)
     BATCH_SIZE = 32
-    EPOCHS = 10         # Quantas vezes a rede verá todos os dados de treino
+    EPOCHS = 50         # Quantas vezes a rede verá todos os dados de treino
     LEARNING_RATE = 0.0001 # O tamanho do "passo" que a rede dá para aprender
 
     # Verifica se há uma placa de vídeo da Nvidia (CUDA) disponível para acelerar, senão usa o Processador (CPU)
