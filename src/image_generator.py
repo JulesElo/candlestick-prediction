@@ -41,7 +41,7 @@ def generate_candlestick_images(csv_path: str, window_size: int = 30, train_spli
     split_index = int(total_images * train_split)
     
     # Define a resolução (2.24 inches * 100 dpi = 224 pixels)
-    FIG_SIZE = 2.24
+    FIG_SIZE = 0.5
     DPI = 100
     
     print(f"Total de imagens: {total_images} | Target: 224x224 pixels (Nativo)")
@@ -80,7 +80,7 @@ if __name__ == "__main__":
     raw_data_path = os.path.join("..", "data", "raw", "USDTBRL_daily.csv")
     
     try:
-        generate_candlestick_images(raw_data_path, window_size=30, train_split=0.8)
+        generate_candlestick_images(raw_data_path, window_size=20, train_split=0.8)
         print("\nProcesso concluído com sucesso! Todas as imagens estão nativamente em 224x224.")
     except Exception as e:
         print(f"Ocorreu um erro: {e}")
