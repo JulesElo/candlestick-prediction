@@ -73,6 +73,8 @@ def train_model():
     
     # Adam é o otimizador que ajustará os pesos da rede para minimizar a perda
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
+    # Configura o decaimento: reduz a taxa de aprendizado pela metade (gamma=0.5) a cada 10 épocas
+    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.5)
 
     # 5. O Loop de Treinamento
     for epoch in range(EPOCHS):
@@ -109,6 +111,8 @@ def train_model():
         # Calcula a acurácia média da época atual
         train_accuracy = 100 * correct_train / total_train
         print(f"Época [{epoch+1}/{EPOCHS}] - Perda: {running_loss/len(train_loader):.4f} - Acurácia Treino: {train_accuracy:.2f}%")
+        # Avisa o agendador que uma época passou, para ele atualizar a taxa de aprendizado se necessário
+        scheduler.step()
 
     print("\nTreinamento concluído. Iniciando avaliação nos dados de Teste (que a rede nunca viu)...")
 
