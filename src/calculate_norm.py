@@ -12,7 +12,7 @@ def calculate_normalization_params(data_dir):
     # Transformação básica: apenas garantir o tamanho 50x50 e converter para Tensor (0.0 a 1.0)
     # IMPORTANTE: Não colocamos o 'Normalize' aqui, porque é justamente ele que queremos descobrir!
     transform = transforms.Compose([
-        transforms.Resize((50, 50)),
+        transforms.Resize((224, 224)),
         transforms.ToTensor()
     ])
 

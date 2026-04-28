@@ -41,7 +41,7 @@ def generate_candlestick_images(csv_path: str, window_size: int = 30, train_spli
     split_index = int(total_images * train_split)
     
     # Define a resolução (2.24 inches * 100 dpi = 224 pixels)
-    FIG_SIZE = 0.5
+    FIG_SIZE = 2.24
     DPI = 100
     
     print(f"Total de imagens: {total_images} | Target: 224x224 pixels (Nativo)")
