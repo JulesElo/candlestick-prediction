@@ -80,7 +80,7 @@ if __name__ == "__main__":
     raw_data_path = os.path.join("..", "data", "raw", "USDTBRL_daily.csv")
     
     try:
-        generate_candlestick_images(raw_data_path, window_size=20, train_split=0.8)
+        generate_candlestick_images(raw_data_path, window_size=30, train_split=0.8)
         print("\nProcesso concluído com sucesso! Todas as imagens estão nativamente em 224x224.")
     except Exception as e:
         print(f"Ocorreu um erro: {e}")
