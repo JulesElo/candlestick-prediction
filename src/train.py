@@ -18,8 +18,8 @@ def get_data_loaders(data_dir: str, batch_size: int = 32):
         transforms.Resize((50, 50)), # Garantia de segurança para o tamanho
         transforms.ToTensor(),         # Converte a imagem (pixels de 0-255) para Tensor (0.0 a 1.0)
         transforms.Normalize(          # Normalização padrão usada em redes RGB
-            mean=[0.485, 0.456, 0.406], 
-            std=[0.229, 0.224, 0.225]
+            mean=[0.0844, 0.0422, 0.0], 
+            std=[0.2506, 0.1258, 1.0] # O 1.0 no final evita a divisão por zero do canal azul
         )
     ])
 
