@@ -15,11 +15,11 @@ def get_data_loaders(data_dir: str, batch_size: int = 32):
     """
     # Transformações necessárias para preparar a imagem para a CNN
     transform = transforms.Compose([
-        transforms.Resize((50, 50)), # Garantia de segurança para o tamanho
+        transforms.Resize((224, 224)), # Garantia de segurança para o tamanho
         transforms.ToTensor(),         # Converte a imagem (pixels de 0-255) para Tensor (0.0 a 1.0)
         transforms.Normalize(          # Normalização padrão usada em redes RGB
-            mean=[0.0844, 0.0422, 0.0], 
-            std=[0.2506, 0.1258, 1.0] # O 1.0 no final evita a divisão por zero do canal azul
+            mean=[0.0402, 0.0203, 0.0], 
+            std=[0.1826, 0.092, 1.0] # O 1.0 no final evita a divisão por zero do canal azul
         )
     ])
 
