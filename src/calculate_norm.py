@@ -68,7 +68,7 @@ if __name__ == "__main__":
     data_directory = os.path.join("..", "images")
     
     try:
-        mean, std = calculate_normalization_params(data_directory, image_size=(224, 224))
+        mean, std = calculate_normalization_params(data_directory, image_size=(100, 100))
         
         print("\n=== Resultados da Normalização Exata do seu Projeto ===")
         print(f"MEAN (Média)       : {[round(x, 4) for x in mean]}")
