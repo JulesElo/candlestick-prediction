@@ -172,16 +172,16 @@ if __name__ == "__main__":
     # =========================================================================
     DATA_DIRECTORY = os.path.join("..", "images")
     
-    # Parâmetros atuais (Configuração do EXP-07)
-    IMAGE_SIZE = 100
+    # Parâmetros atuais (Configuração do EXP-08)
+    IMAGE_SIZE = 224
     EPOCHS = 50
     BATCH_SIZE = 32
-    LEARNING_RATE = 0.0001
-    USE_LR_DECAY = False
+    LEARNING_RATE = 0.001
+    USE_LR_DECAY = True
     
     # Normalização
-    MEAN = [0.0608, 0.0304, 0.0]
-    STD = [0.2186, 0.1097, 1.0]
+    MEAN = [0.0395, 0.0198, 0.0]
+    STD = [0.1803, 0.0905, 1.0]
 
     try:
         train_model(
