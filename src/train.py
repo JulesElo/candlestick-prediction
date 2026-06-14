@@ -3,9 +3,13 @@ from typing import Tuple, List
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
+
+# Importa o motor de cálculos de métricas
+from utils.evaluation import evaluate_and_plot
 
 # Importa a arquitetura da CNN que criamos no arquivo model.py
 from model import CandlestickCNN
@@ -106,6 +110,9 @@ def train_model(
     if use_scheduler:
         scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.5)
 
+    history_losses = []
+    history_accuracies = []
+
     # O Loop de Treinamento
     for epoch in range(epochs):
         model.train() # Coloca o modelo em modo de treinamento (ativa o Dropout)
@@ -140,6 +147,11 @@ def train_model(
 
         # Calcula a acurácia média da época atual
         train_accuracy = 100 * correct_train / total_train
+
+        # Salvando para o gráfico
+        history_losses.append(running_loss/len(train_loader))
+        history_accuracies.append(train_accuracy)
+
         print(f"Época [{epoch+1}/{epochs}] - Perda: {running_loss/len(train_loader):.4f} - Acurácia Treino: {train_accuracy:.2f}%")
 
         # Avisa o agendador que uma época passou, para ele atualizar a taxa de aprendizado se necessário
@@ -150,20 +162,50 @@ def train_model(
 
     # Avaliação final (Teste)
     model.eval() # Coloca o modelo em modo de avaliação (desativa o Dropout para estabilidade)
-    correct_test = 0
-    total_test = 0
+    # correct_test = 0
+    # total_test = 0
 
-    # torch.no_grad() desliga o cálculo de gradientes para economizar memória e processamento
+    all_true_labels = []
+    all_predictions = []
+    all_probabilities = []
+
     with torch.no_grad():
         for images, labels in test_loader:
             images, labels = images.to(device), labels.to(device)
             outputs = model(images)
+            
+            # Pega as probabilidades brutas (0 a 1) usando Softmax
+            probs = F.softmax(outputs, dim=1)
+            
+            # Pega a classe com maior probabilidade
             _, predicted = torch.max(outputs.data, 1)
-            total_test += labels.size(0)
-            correct_test += (predicted == labels).sum().item()
+            
+            # Guarda na memória do Python para o scikit-learn
+            all_true_labels.extend(labels.cpu().numpy())
+            all_predictions.extend(predicted.cpu().numpy())
+            # Guardamos a probabilidade de ser classe 1 (UP) para o cálculo do ROC-AUC
+            all_probabilities.extend(probs[:, 1].cpu().numpy())
 
-    test_accuracy = 100 * correct_test / total_test
-    print(f"\n=> Acurácia Final no conjunto de Teste: {test_accuracy:.2f}%")
+    # --- NOVO: Chamando nosso motor de avaliação ---
+    evaluate_and_plot(
+        y_true=all_true_labels, 
+        y_pred=all_predictions, 
+        y_prob=all_probabilities, 
+        train_losses=history_losses, 
+        train_accuracies=history_accuracies
+    )
+
+    # torch.no_grad() desliga o cálculo de gradientes para economizar memória e processamento
+    # with torch.no_grad():
+    #     for images, labels in test_loader:
+    #         images, labels = images.to(device), labels.to(device)
+    #         outputs = model(images)
+    #         _, predicted = torch.max(outputs.data, 1)
+    #         total_test += labels.size(0)
+    #         correct_test += (predicted == labels).sum().item()
+
+    # test_accuracy = 100 * correct_test / total_test
+    # print(f"\n=> Acurácia Final no conjunto de Teste: {test_accuracy:.2f}%")
 
 if __name__ == "__main__":
     # =========================================================================
