@@ -162,8 +162,6 @@ def train_model(
 
     # Avaliação final (Teste)
     model.eval() # Coloca o modelo em modo de avaliação (desativa o Dropout para estabilidade)
-    # correct_test = 0
-    # total_test = 0
 
     all_true_labels = []
     all_predictions = []
@@ -194,18 +192,6 @@ def train_model(
         train_losses=history_losses, 
         train_accuracies=history_accuracies
     )
-
-    # torch.no_grad() desliga o cálculo de gradientes para economizar memória e processamento
-    # with torch.no_grad():
-    #     for images, labels in test_loader:
-    #         images, labels = images.to(device), labels.to(device)
-    #         outputs = model(images)
-    #         _, predicted = torch.max(outputs.data, 1)
-    #         total_test += labels.size(0)
-    #         correct_test += (predicted == labels).sum().item()
-
-    # test_accuracy = 100 * correct_test / total_test
-    # print(f"\n=> Acurácia Final no conjunto de Teste: {test_accuracy:.2f}%")
 
 if __name__ == "__main__":
     # =========================================================================
