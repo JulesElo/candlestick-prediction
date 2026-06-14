@@ -210,3 +210,7 @@ __marimo__/
 data/raw/*.csv
 images/
 *.png
+
+# Ignorar as saídas de validação (Gráficos e Logs)
+outputs/
+/src/outputs/
