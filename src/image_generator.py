@@ -17,22 +17,14 @@ def create_directories(base_dir: str = os.path.join("..", "images")) -> str:
     Returns:
         str: O caminho absoluto ou relativo da pasta base criada.
     """
-    folders = [
-        os.path.join(base_dir, "train", "up"),
-        os.path.join(base_dir, "train", "down"),
-        os.path.join(base_dir, "test", "up"),
-        os.path.join(base_dir, "test", "down")
-    ]
-
-    for folder in folders:
-        os.makedirs(folder, exist_ok=True)
+    folder = os.path.join(base_dir, "all")
+    os.makedirs(folder, exist_ok=True)
 
     return base_dir
 
 def generate_candlestick_images(
     csv_path: str, 
-    window_size: int = 30, 
-    train_split: float = 0.8,
+    window_size: int = 30,
     fig_size: float = 2.24,
     dpi: int = 100
 ) -> None:
@@ -67,7 +59,6 @@ def generate_candlestick_images(
     )
 
     total_images = len(df) - window_size - 1
-    split_index = int(total_images * train_split)
     
     resolution = int(fig_size * dpi)
     print(f"Total de imagens a gerar: {total_images} | Resolução Alvo: {resolution}x{resolution} pixels")
@@ -79,12 +70,11 @@ def generate_candlestick_images(
         target_day_close = df.iloc[i + window_size]['close']
         
         label = "up" if target_day_close > close_day_current else "down"
-        dataset_type = "train" if i < split_index else "test"
             
         start_date = window_df.index[0].strftime("%Y%m%d")
         end_date = window_df.index[-1].strftime("%Y%m%d")
-        filename = f"{start_date}_to_{end_date}.png"
-        filepath = os.path.join(base_dir, dataset_type, label, filename)
+        filename = f"{start_date}_to_{end_date}_{label}.png"
+        filepath = os.path.join(base_dir, "all", filename)
         
         # 1. Cria a figura vazia com o tamanho exato
         fig = plt.figure(figsize=(fig_size, fig_size), dpi=dpi, facecolor='black')
