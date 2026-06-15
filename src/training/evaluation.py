@@ -1,28 +1,46 @@
 import os
 import matplotlib.pyplot as plt
 import seaborn as sns
+from typing import List
 from sklearn.metrics import (
     accuracy_score, f1_score, roc_auc_score, 
     average_precision_score, cohen_kappa_score, 
     matthews_corrcoef, confusion_matrix
 )
 
-def evaluate_and_plot(y_true, y_pred, y_prob, train_losses, train_accuracies, output_dir="../outputs"):
+def evaluate_and_plot(
+    y_true: List[int], 
+    y_pred: List[int], 
+    y_prob: List[float], 
+    train_losses: List[float], 
+    train_accuracies: List[float], 
+    output_dir: str
+) -> None:
     """
-    Calcula as métricas avançadas e salva os gráficos de evidência visual.
+    Calcula as métricas estatísticas avançadas e gera as evidências visuais
+    (Matriz de Confusão e Curvas de Aprendizado) para validação do modelo.
+
+    Args:
+        y_true (List[int]): Lista com os rótulos reais (0 para DOWN, 1 para UP).
+        y_pred (List[int]): Lista com as previsões de classe do modelo.
+        y_prob (List[float]): Lista com as probabilidades contínuas (Softmax) da classe UP.
+        train_losses (List[float]): Histórico do valor de Loss ao longo das épocas de treino.
+        train_accuracies (List[float]): Histórico da acurácia ao longo das épocas de treino.
+        output_dir (str): Caminho absoluto ou relativo da pasta onde os gráficos serão salvos.
     """
+    # Garante que a pasta de destino exista
     os.makedirs(output_dir, exist_ok=True)
     
     # 1. Cálculos Estatísticos
     acc = accuracy_score(y_true, y_pred)
-    f1 = f1_score(y_true, y_pred, average='macro') # Macro dá o mesmo peso para UP e DOWN
+    f1 = f1_score(y_true, y_pred, average='macro')
     roc_auc = roc_auc_score(y_true, y_prob)
     pr_auc = average_precision_score(y_true, y_prob)
     kappa = cohen_kappa_score(y_true, y_pred)
     mcc = matthews_corrcoef(y_true, y_pred)
     
     print("\n" + "="*50)
-    print("RESULTADOS AVANÇADOS DE VALIDAÇÃO")
+    print("🏆 RESULTADOS AVANÇADOS DE VALIDAÇÃO 🏆")
     print("="*50)
     print(f"Acurácia Geral : {acc*100:.2f}%")
     print(f"F1-Score Macro : {f1:.4f} (Equilíbrio Precisão/Recall)")
