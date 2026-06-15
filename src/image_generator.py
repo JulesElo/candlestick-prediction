@@ -97,7 +97,7 @@ if __name__ == "__main__":
     
     try:
         # A resolução padrão da função já está configurada para gerar 224x224 (2.24 * 100)
-        generate_candlestick_images(csv_path=raw_data_path, window_size=30, train_split=0.8)
+        generate_candlestick_images(csv_path=raw_data_path, window_size=30)
         print("\nProcesso concluído com sucesso!")
     except FileNotFoundError:
         print(f"Erro: O arquivo '{raw_data_path}' não foi encontrado. Execute o data_collector.py primeiro.")
