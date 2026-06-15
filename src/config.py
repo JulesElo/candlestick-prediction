@@ -10,7 +10,7 @@ class PathsConfig:
     base_dir: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     
     raw_data_dir: str = os.path.join(base_dir, "data", "raw")
-    processed_data_dir: str = os.path.join(base_dir, "data", "processed", "all")
+    processed_data_dir: str = os.path.join(base_dir, "data", "processed", "images")
     experiments_dir: str = os.path.join(base_dir, "experiments")
 
 @dataclass

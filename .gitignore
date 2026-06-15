@@ -211,6 +211,19 @@ data/raw/*.csv
 images/
 *.png
 
-# Ignorar as saídas de validação (Gráficos e Logs)
-outputs/
-/src/outputs/
+# ==========================================
+# Configurações Específicas do Projeto
+# ==========================================
+
+# Ignorar dados brutos (CSV), mas garantir que a pasta exista
+data/raw/*
+!data/raw/.gitkeep
+!data/raw/.gitkeep*
+
+# Ignorar imagens processadas, mas garantir que a pasta exista
+data/processed/*
+!data/processed/.gitkeep
+!data/processed/.gitkeep*
+
+# Ignorar todas as saídas de validação (gráficos, matrizes, logs de treino)
+experiments/
