@@ -41,7 +41,7 @@ def train_walk_forward():
 
     for fold, (train_index, test_index) in enumerate(tscv.split(full_dataset)):
         print("\n" + "="*50)
-        print(f"🚀 INICIANDO FOLD {fold+1}/{CONFIG.training.n_splits}")
+        print(f"INICIANDO FOLD {fold+1}/{CONFIG.training.n_splits}")
         print(f"Treino: {len(train_index)} imagens | Teste: {len(test_index)} imagens")
         print("="*50)
 
@@ -97,8 +97,6 @@ def train_walk_forward():
         # ================= AVALIAÇÃO DO FOLD =================
         model.eval()
         
-        correct_test = 0
-        total_test = 0
         all_true_labels = []
         all_predictions = []
         all_probabilities = []
@@ -114,12 +112,6 @@ def train_walk_forward():
                 all_true_labels.extend(labels.cpu().numpy())
                 all_predictions.extend(predicted.cpu().numpy())
                 all_probabilities.extend(probs[:, 1].cpu().numpy())
-
-                total_test += labels.size(0)
-                correct_test += (predicted == labels).sum().item()
-
-        test_accuracy = 100 * correct_test / total_test
-        print(f"=> [CONFERÊNCIA INTERNA] Acurácia Final no Fold {fold+1}: {test_accuracy:.2f}%")
 
         # Salva os gráficos deste Fold na pasta centralizada do CONFIG
         fold_output_dir = os.path.join(CONFIG.paths.experiments_dir, f"fold_{fold+1}")

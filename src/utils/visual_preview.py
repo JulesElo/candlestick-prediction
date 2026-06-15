@@ -57,7 +57,7 @@ def generate_preview_image(
     fig.savefig(filepath, dpi=dpi, facecolor='black')
     plt.close(fig)
     
-    print(f"✅ Preview salvo com sucesso em: {filepath}")
+    print(f"Preview salvo com sucesso em: {filepath}")
 
 if __name__ == "__main__":
     generate_preview_image()

@@ -40,14 +40,14 @@ def evaluate_and_plot(
     mcc = matthews_corrcoef(y_true, y_pred)
     
     print("\n" + "="*50)
-    print("🏆 RESULTADOS AVANÇADOS DE VALIDAÇÃO 🏆")
+    print("RESULTADOS AVANÇADOS DE VALIDAÇÃO")
     print("="*50)
     print(f"Acurácia Geral : {acc*100:.2f}%")
-    print(f"F1-Score Macro : {f1:.4f} (Equilíbrio Precisão/Recall)")
-    print(f"ROC-AUC        : {roc_auc:.4f} (Capacidade de distinção)")
-    print(f"PR-AUC         : {pr_auc:.4f} (Foco na classe minoritária)")
-    print(f"Kappa Score    : {kappa:.4f} (Acertos além da sorte)")
-    print(f"MCC            : {mcc:.4f} (Métrica suprema)")
+    print(f"F1-Score       : {f1:.4f}")
+    print(f"ROC-AUC        : {roc_auc:.4f}")
+    print(f"PR-AUC         : {pr_auc:.4f}")
+    print(f"Kappa Score    : {kappa:.4f}")
+    print(f"MCC            : {mcc:.4f}")
     print("="*50 + "\n")
 
     # 2. Gráfico 1: Curvas de Aprendizado (Loss e Acurácia)
@@ -82,4 +82,4 @@ def evaluate_and_plot(
     plt.savefig(os.path.join(output_dir, "confusion_matrix.png"))
     plt.close()
     
-    print(f"✅ Gráficos de evidência visual salvos na pasta: {output_dir}")
+    print(f"Gráficos de evidência visual salvos na pasta: {output_dir}")
