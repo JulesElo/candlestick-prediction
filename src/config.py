@@ -16,6 +16,8 @@ class PathsConfig:
 @dataclass
 class ModelConfig:
     """Configuracoes da arquitetura da Rede Neural."""
+
+    model_name: str = "resnet"  # Opções disponíveis: "cnn" ou "resnet"
     
     image_size: int = 224
     

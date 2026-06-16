@@ -13,6 +13,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import CONFIG
 from data.dataset import ChronologicalDataset
 from models.cnn import CandlestickCNN
+from models.resnet import CandlestickResNet
 
 # Importa o motor de avaliação que agora mora na mesma pasta
 from training.evaluation import evaluate_and_plot
@@ -52,8 +53,12 @@ def train_walk_forward():
         train_loader = DataLoader(train_subset, batch_size=CONFIG.training.batch_size, shuffle=True)
         test_loader = DataLoader(test_subset, batch_size=CONFIG.training.batch_size, shuffle=False)
 
-        # Instancia o modelo ZERADO para cada fold
-        model = CandlestickCNN().to(device)
+        # Instancia o modelo ZERADO para cada fold dinamicamente
+        if CONFIG.model.model_name == "resnet":
+            model = CandlestickResNet().to(device)
+        else:
+            model = CandlestickCNN().to(device)
+        
         criterion = nn.CrossEntropyLoss()
         optimizer = optim.Adam(model.parameters(), lr=CONFIG.training.learning_rate)
         
