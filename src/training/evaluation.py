@@ -5,7 +5,7 @@ from typing import List
 from sklearn.metrics import (
     accuracy_score, f1_score, roc_auc_score, 
     average_precision_score, cohen_kappa_score, 
-    matthews_corrcoef, confusion_matrix
+    matthews_corrcoef, confusion_matrix, roc_curve
 )
 
 def evaluate_and_plot(
@@ -83,3 +83,16 @@ def evaluate_and_plot(
     plt.close()
     
     print(f"Gráficos de evidência visual salvos na pasta: {output_dir}")
+
+    # 4. Gráfico Curva ROC
+    fpr, tpr, _ = roc_curve(y_true, y_prob)
+    plt.figure(figsize=(6, 5))
+    plt.plot(fpr, tpr, color='darkorange', lw=2, label=f'ROC curve (AUC = {roc_auc:.4f})')
+    plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+    plt.xlabel('Taxa de Falsos Positivos')
+    plt.ylabel('Taxa de Verdadeiros Positivos')
+    plt.title('Curva ROC')
+    plt.legend(loc="lower right")
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, "roc_curve.png"))
+    plt.close()
