@@ -34,8 +34,12 @@ class CandlestickResNet(nn.Module):
         # ==========================================
         # Varre todos os parâmetros da rede e impede que o otimizador os altere
         if pretrained:
-            for param in self.resnet.parameters():
-                param.requires_grad = False
+            for name, param in self.resnet.named_parameters():
+                # Descongela a camada 4 (último bloco convolucional) e a camada fully connected
+                if "layer4" in name or "fc" in name:
+                    param.requires_grad = True
+                else:
+                    param.requires_grad = False
         
         # Extrai o número de neurônios da camada final original da ResNet
         num_ftrs = self.resnet.fc.in_features
