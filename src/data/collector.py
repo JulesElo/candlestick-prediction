@@ -1,29 +1,24 @@
-import os
 import sys
+from pathlib import Path
 import pandas as pd
 import requests
 
-# Ajuste no caminho do sistema para permitir a importação do config estando dentro da pasta data
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from config import CONFIG
+# Adiciona a raiz do projeto ao sys.path para permitir importações do módulo src
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+from src.config import CONFIG
 
 BINANCE_API_URL = "https://api.binance.com/api/v3/klines"
 
 def fetch_daily_data(symbol: str, limit: int = 1000) -> pd.DataFrame:
     """
-    Busca os dados históricos de um ativo financeiro na API da Binance.
+    Busca dados históricos de candlesticks diários na API da Binance.
 
     Args:
-        symbol (str): O símbolo do par de moedas a ser buscado (ex: 'USDTBRL').
-        limit (int, optional): O número máximo de dias (candlesticks) a buscar. 
-                               O limite máximo permitido pela API é 1000. Padrão é 1000.
+        symbol (str): Par de moedas (ex: 'USDTBRL').
+        limit (int): Número máximo de registros (candlesticks) a buscar.
 
     Returns:
-        pd.DataFrame: DataFrame contendo as colunas essenciais do mercado: 
-                      ['date', 'open', 'high', 'low', 'close', 'volume'].
-    
-    Raises:
-        requests.exceptions.RequestException: Caso ocorra uma falha na comunicação HTTP.
+        pd.DataFrame: DataFrame com colunas date, open, high, low, close e volume.
     """
     params = {
         "symbol": symbol,
@@ -31,7 +26,7 @@ def fetch_daily_data(symbol: str, limit: int = 1000) -> pd.DataFrame:
         "limit": limit
     }
     
-    response = requests.get(BINANCE_API_URL, params=params)
+    response = requests.get(BINANCE_API_URL, params=params, timeout=10)
     response.raise_for_status()
     
     raw_data = response.json()
@@ -43,7 +38,6 @@ def fetch_daily_data(symbol: str, limit: int = 1000) -> pd.DataFrame:
     ]
     
     df = pd.DataFrame(raw_data, columns=columns)
-    
     df = df[["date", "open", "high", "low", "close", "volume"]]
     df["date"] = pd.to_datetime(df["date"], unit="ms")
     
@@ -54,21 +48,18 @@ def fetch_daily_data(symbol: str, limit: int = 1000) -> pd.DataFrame:
 
 def save_raw_data(df: pd.DataFrame, filename: str) -> None:
     """
-    Salva o DataFrame processado em formato CSV, utilizando o caminho
-    centralizado nas configurações do projeto.
+    Salva o DataFrame em formato CSV no diretório configurado.
 
     Args:
-        df (pd.DataFrame): O DataFrame contendo os dados do ativo financeiro.
-        filename (str): O nome do arquivo com a extensão (ex: 'USDTBRL_daily.csv').
+        df (pd.DataFrame): Dados financeiros processados.
+        filename (str): Nome do arquivo de saída.
     """
-    # Importa o diretório diretamente do arquivo de configuração
     output_dir = CONFIG.paths.raw_data_dir
-    
-    os.makedirs(output_dir, exist_ok=True)
-    filepath = os.path.join(output_dir, filename)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    filepath = output_dir / filename
     
     df.to_csv(filepath, index=False)
-    print(f"Dados gravados com sucesso em: {filepath}")
+    print(f"Dados gravados em: {filepath}")
 
 if __name__ == "__main__":
     target_symbol = "USDTBRL"
