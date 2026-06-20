@@ -17,9 +17,12 @@ class PathsConfig:
 class ModelConfig:
     """Configuracoes da arquitetura da Rede Neural."""
 
-    model_name: str = "resnet"  # Opções disponíveis: "cnn" ou "resnet"
+    model_name: str = "cnn"  # Opções disponíveis: "cnn" ou "resnet"
     
     image_size: int = 224
+
+    # "custom" para a calculada no dataset ou "imagenet" para o padrão PyTorch
+    normalization_type: str = "custom"
     
     # Parametros de normalizacao calculados anteriormente (EXP-08)
     mean: List[float] = field(default_factory=lambda: [0.0395, 0.0198, 0.0])
