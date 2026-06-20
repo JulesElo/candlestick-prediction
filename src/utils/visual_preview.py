@@ -1,13 +1,12 @@
-import os
 import sys
+from pathlib import Path
 import matplotlib.pyplot as plt
 import mplfinance as mpf
 import pandas as pd
-from typing import Optional
 
-# Ajuste no caminho do sistema para importar o config
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from config import CONFIG
+# Adiciona a raiz do projeto ao sys.path para importação do módulo src
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+from src.config import CONFIG
 
 def generate_preview_image(
     window_size: int = 30,
@@ -15,39 +14,38 @@ def generate_preview_image(
     csv_filename: str = "USDTBRL_daily.csv"
 ) -> None:
     """
-    Gera uma imagem de pré-visualização de um gráfico de candlestick 
-    utilizando a resolução oficial do projeto definida no config.py.
+    Gera uma imagem de pré-visualização de um gráfico de candlestick.
 
     Args:
-        window_size (int, optional): O tamanho da janela em dias. Padrão é 30.
-        dpi (int, optional): Densidade de pixels por polegada. Padrão é 100.
-        csv_filename (str, optional): Nome do arquivo CSV bruto.
+        window_size (int): Tamanho da janela em dias.
+        dpi (int): Densidade de pixels por polegada.
+        csv_filename (str): Nome do arquivo CSV de entrada.
     """
-    csv_path = os.path.join(CONFIG.paths.raw_data_dir, csv_filename)
+    csv_path = CONFIG.paths.raw_data_dir / csv_filename
 
     try:
         df = pd.read_csv(csv_path)
         df['date'] = pd.to_datetime(df['date'])
         df.set_index('date', inplace=True)
     except FileNotFoundError:
-        print(f"Erro: Arquivo {csv_path} não encontrado. Execute o coletor de dados primeiro.")
+        print(f"Erro: Arquivo {csv_path} não encontrado.")
         return
 
-    # Pega uma janela aleatória de dias (ex: do dia 50 ao dia 50 + window_size)
+    if len(df) < 50 + window_size:
+        print("Erro: Dados insuficientes para gerar a pré-visualização.")
+        return
+
     window_df = df.iloc[50:50+window_size]
 
     market_colors = mpf.make_marketcolors(up='green', down='red', edge='inherit', wick='inherit', volume='in')
     custom_style = mpf.make_mpf_style(marketcolors=market_colors, facecolor='black', edgecolor='black', figcolor='black', gridstyle='', y_on_right=False)
     
-    # Busca a resolução oficial do projeto
     resolution = CONFIG.model.image_size
     fig_width = resolution / dpi
     
-    # Salva na pasta de experimentos para não misturar com o dataset oficial
-    os.makedirs(CONFIG.paths.experiments_dir, exist_ok=True)
-    filepath = os.path.join(CONFIG.paths.experiments_dir, f"preview_{resolution}x{resolution}.png")
-    
-    print(f"Gerando imagem de pré-visualização em {resolution}x{resolution} pixels...")
+    output_dir = CONFIG.paths.experiments_dir
+    output_dir.mkdir(parents=True, exist_ok=True)
+    filepath = output_dir / f"preview_{resolution}x{resolution}.png"
     
     fig = plt.figure(figsize=(fig_width, fig_width), dpi=dpi, facecolor='black')
     ax = fig.add_axes([0, 0, 1, 1])
@@ -57,7 +55,7 @@ def generate_preview_image(
     fig.savefig(filepath, dpi=dpi, facecolor='black')
     plt.close(fig)
     
-    print(f"Preview salvo com sucesso em: {filepath}")
+    print(f"Preview salvo em: {filepath}")
 
 if __name__ == "__main__":
     generate_preview_image()
