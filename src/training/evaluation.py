@@ -1,6 +1,6 @@
-import os
 import matplotlib.pyplot as plt
 import seaborn as sns
+from pathlib import Path
 from typing import List, Dict
 from sklearn.metrics import (
     accuracy_score, f1_score, roc_auc_score, 
@@ -16,24 +16,26 @@ def evaluate_and_plot(
     val_losses: List[float], 
     train_accuracies: List[float],
     val_accuracies: List[float],
-    output_dir: str
+    output_dir: Path
 ) -> Dict[str, float]:
     """
-    Calcula as métricas estatísticas avançadas e gera as evidências visuais
-    (Matriz de Confusão e Curvas de Aprendizado) para validação do modelo.
+    Calcula métricas de validação e gera gráficos de desempenho do modelo.
 
     Args:
-        y_true (List[int]): Lista com os rótulos reais (0 para DOWN, 1 para UP).
-        y_pred (List[int]): Lista com as previsões de classe do modelo.
-        y_prob (List[float]): Lista com as probabilidades contínuas (Softmax) da classe UP.
-        train_losses (List[float]): Histórico do valor de Loss ao longo das épocas de treino.
-        train_accuracies (List[float]): Histórico da acurácia ao longo das épocas de treino.
-        output_dir (str): Caminho absoluto ou relativo da pasta onde os gráficos serão salvos.
+        y_true (List[int]): Rótulos reais das classes (0 ou 1).
+        y_pred (List[int]): Predições discretas do modelo.
+        y_prob (List[float]): Probabilidades contínuas para a classe 1.
+        train_losses (List[float]): Histórico de perda de treino.
+        val_losses (List[float]): Histórico de perda de validação.
+        train_accuracies (List[float]): Histórico de acurácia de treino.
+        val_accuracies (List[float]): Histórico de acurácia de validação.
+        output_dir (Path): Diretório de destino para exportação dos gráficos.
+
+    Returns:
+        Dict[str, float]: Dicionário com as métricas calculadas.
     """
-    # Garante que a pasta de destino exista
-    os.makedirs(output_dir, exist_ok=True)
+    output_dir.mkdir(parents=True, exist_ok=True)
     
-    # 1. Cálculos Estatísticos
     acc = accuracy_score(y_true, y_pred)
     f1 = f1_score(y_true, y_pred, average='macro')
     roc_auc = roc_auc_score(y_true, y_prob)
@@ -51,7 +53,7 @@ def evaluate_and_plot(
     }
     
     print("\n" + "="*50)
-    print("RESULTADOS AVANÇADOS DE VALIDAÇÃO")
+    print("RESULTADOS DE VALIDAÇÃO")
     print("="*50)
     print(f"Acurácia Geral : {acc*100:.2f}%")
     print(f"F1-Score       : {f1:.4f}")
@@ -61,7 +63,6 @@ def evaluate_and_plot(
     print(f"MCC            : {mcc:.4f}")
     print("="*50 + "\n")
 
-# 2. Gráfico 1: Curvas de Aprendizado (Treino vs Teste)
     plt.figure(figsize=(12, 5))
     
     plt.subplot(1, 2, 1)
@@ -81,10 +82,9 @@ def evaluate_and_plot(
     plt.legend()
     
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, "training_history.png"))
+    plt.savefig(output_dir / "training_history.png")
     plt.close()
 
-    # 3. Gráfico 2: Matriz de Confusão
     cm = confusion_matrix(y_true, y_pred)
     plt.figure(figsize=(6, 5))
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['DOWN', 'UP'], yticklabels=['DOWN', 'UP'])
@@ -92,10 +92,9 @@ def evaluate_and_plot(
     plt.ylabel('Realidade')
     plt.xlabel('Previsão do Modelo')
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, "confusion_matrix.png"))
+    plt.savefig(output_dir / "confusion_matrix.png")
     plt.close()
     
-    # 4. Gráfico Curva ROC
     fpr, tpr, _ = roc_curve(y_true, y_prob)
     plt.figure(figsize=(6, 5))
     plt.plot(fpr, tpr, color='darkorange', lw=2, label=f'ROC curve (AUC = {roc_auc:.4f})')
@@ -105,9 +104,7 @@ def evaluate_and_plot(
     plt.title('Curva ROC')
     plt.legend(loc="lower right")
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, "roc_curve.png"))
+    plt.savefig(output_dir / "roc_curve.png")
     plt.close()
-    
-    print(f"Gráficos de evidência visual salvos na pasta: {output_dir}")
 
     return metrics
