@@ -1,7 +1,7 @@
 import os
 import matplotlib.pyplot as plt
 import seaborn as sns
-from typing import List
+from typing import List, Dict
 from sklearn.metrics import (
     accuracy_score, f1_score, roc_auc_score, 
     average_precision_score, cohen_kappa_score, 
@@ -12,10 +12,12 @@ def evaluate_and_plot(
     y_true: List[int], 
     y_pred: List[int], 
     y_prob: List[float], 
-    train_losses: List[float], 
-    train_accuracies: List[float], 
+    train_losses: List[float],
+    val_losses: List[float], 
+    train_accuracies: List[float],
+    val_accuracies: List[float],
     output_dir: str
-) -> None:
+) -> Dict[str, float]:
     """
     Calcula as métricas estatísticas avançadas e gera as evidências visuais
     (Matriz de Confusão e Curvas de Aprendizado) para validação do modelo.
@@ -38,6 +40,15 @@ def evaluate_and_plot(
     pr_auc = average_precision_score(y_true, y_prob)
     kappa = cohen_kappa_score(y_true, y_pred)
     mcc = matthews_corrcoef(y_true, y_pred)
+
+    metrics = {
+        'acc': acc,
+        'f1': f1,
+        'roc_auc': roc_auc,
+        'pr_auc': pr_auc,
+        'kappa': kappa,
+        'mcc': mcc
+    }
     
     print("\n" + "="*50)
     print("RESULTADOS AVANÇADOS DE VALIDAÇÃO")
@@ -50,18 +61,20 @@ def evaluate_and_plot(
     print(f"MCC            : {mcc:.4f}")
     print("="*50 + "\n")
 
-    # 2. Gráfico 1: Curvas de Aprendizado (Loss e Acurácia)
+# 2. Gráfico 1: Curvas de Aprendizado (Treino vs Teste)
     plt.figure(figsize=(12, 5))
     
     plt.subplot(1, 2, 1)
-    plt.plot(train_losses, label='Treino Loss', color='red')
+    plt.plot(train_losses, label='Treino', color='blue')
+    plt.plot(val_losses, label='Validação', color='orange', linestyle='--')
     plt.title('Evolução da Perda (Loss)')
     plt.xlabel('Épocas')
     plt.ylabel('Loss')
     plt.legend()
     
     plt.subplot(1, 2, 2)
-    plt.plot(train_accuracies, label='Treino Acurácia', color='blue')
+    plt.plot(train_accuracies, label='Treino', color='blue')
+    plt.plot(val_accuracies, label='Validação', color='orange', linestyle='--')
     plt.title('Evolução da Acurácia')
     plt.xlabel('Épocas')
     plt.ylabel('Acurácia (%)')
@@ -82,8 +95,6 @@ def evaluate_and_plot(
     plt.savefig(os.path.join(output_dir, "confusion_matrix.png"))
     plt.close()
     
-    print(f"Gráficos de evidência visual salvos na pasta: {output_dir}")
-
     # 4. Gráfico Curva ROC
     fpr, tpr, _ = roc_curve(y_true, y_prob)
     plt.figure(figsize=(6, 5))
@@ -96,3 +107,7 @@ def evaluate_and_plot(
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, "roc_curve.png"))
     plt.close()
+    
+    print(f"Gráficos de evidência visual salvos na pasta: {output_dir}")
+
+    return metrics
