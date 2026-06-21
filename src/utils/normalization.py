@@ -10,7 +10,7 @@ from tqdm import tqdm
 # Adiciona a raiz do projeto ao sys.path para importação do módulo src
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 from src.config import CONFIG
-from src.data.dataset import ChronologicalDataset
+from src.data.data_loader import ChronologicalDataset
 
 def calculate_normalization_params(batch_size: int = 32) -> Tuple[List[float], List[float]]:
     """

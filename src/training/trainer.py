@@ -12,7 +12,7 @@ import numpy as np
 # Adiciona a raiz do projeto ao sys.path para importação do módulo src
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 from src.config import CONFIG
-from src.data.dataset import ChronologicalDataset
+from src.data.data_loader import ChronologicalDataset
 from src.training.evaluation import evaluate_and_plot
 
 def train_walk_forward():
