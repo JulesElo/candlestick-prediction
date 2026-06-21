@@ -1,5 +1,3 @@
-import sys
-from pathlib import Path
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -9,8 +7,6 @@ from torchvision import transforms
 from sklearn.model_selection import TimeSeriesSplit
 import numpy as np
 
-# Adiciona a raiz do projeto ao sys.path para importação do módulo src
-sys.path.append(str(Path(__file__).resolve().parents[2]))
 from src.config import CONFIG
 from src.data.data_loader import ChronologicalDataset
 from src.training.evaluation import evaluate_and_plot

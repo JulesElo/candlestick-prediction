@@ -1,5 +1,3 @@
-import sys
-from pathlib import Path
 from typing import Tuple, List
 
 import torch
@@ -7,8 +5,6 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 from tqdm import tqdm
 
-# Adiciona a raiz do projeto ao sys.path para importação do módulo src
-sys.path.append(str(Path(__file__).resolve().parents[2]))
 from src.config import CONFIG
 from src.data.data_loader import ChronologicalDataset
 

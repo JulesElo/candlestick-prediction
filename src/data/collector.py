@@ -1,10 +1,6 @@
-import sys
-from pathlib import Path
 import pandas as pd
 import requests
 
-# Adiciona a raiz do projeto ao sys.path para permitir importações do módulo src
-sys.path.append(str(Path(__file__).resolve().parents[2]))
 from src.config import CONFIG
 
 BINANCE_API_URL = "https://api.binance.com/api/v3/klines"

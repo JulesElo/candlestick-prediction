@@ -1,11 +1,8 @@
-import sys
 from pathlib import Path
 from PIL import Image
 from torch.utils.data import Dataset
 from typing import Callable, Optional
 
-# Adiciona a raiz do projeto ao sys.path para importação do módulo src
-sys.path.append(str(Path(__file__).resolve().parents[2]))
 from src.config import CONFIG
 
 class ChronologicalDataset(Dataset):

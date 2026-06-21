@@ -1,11 +1,7 @@
-import sys
-from pathlib import Path
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-# Adiciona a raiz do projeto ao sys.path para importação do módulo src
-sys.path.append(str(Path(__file__).resolve().parents[2]))
 from src.config import CONFIG
 
 class CandlestickCNN(nn.Module):

@@ -1,10 +1,7 @@
-import sys
-from pathlib import Path
 import torch
 import torch.nn as nn
 from torchvision import models
 
-sys.path.append(str(Path(__file__).resolve().parents[2]))
 from src.config import CONFIG
 
 class CandlestickResNet(nn.Module):
